@@ -1,0 +1,10 @@
+telethon==1.36.0
+     dbt-postgres==1.8.2
+     ultralytics==8.2.79
+     fastapi==0.115.0
+     uvicorn==0.30.6
+     python-dotenv==1.0.1
+     dagster==1.7.16
+     dagster-webserver==1.7.16
+     psycopg2-binary==2.9.9
+     pandas==2.2.2
