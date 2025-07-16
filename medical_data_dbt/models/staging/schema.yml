@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw
+    database: medical_data # This should match your DB_NAME from .env
+    schema: raw          # This should match the schema your load_to_postgres.py creates
+    tables:
+      - name: telegram_messages
+        # You can add tests for your raw data here if desired
+        # tests:
+        #   - unique:
+        #       column_name: id
+        #   - not_null:
+        #       column_name: id
