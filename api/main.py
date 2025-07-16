@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
-from config import DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_PORT
+from scripts.config import DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_PORT
 import logging
 
 # Configure logging
