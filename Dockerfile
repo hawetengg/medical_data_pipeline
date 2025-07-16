@@ -2,9 +2,24 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+# Install system dependencies required by opencv-python (used by ultralytics)
+# and psycopg2 (for database connection)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libgirepository1.0-dev \
+    libcairo2-dev \
+    pkg-config \
+    python3-dev \
+    build-essential \
+    libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-ENV PIP_DEFAULT_TIMEOUT=3000 
+# Set PIP timeout before copying requirements and wheels
+ENV PIP_DEFAULT_TIMEOUT=3000
+
+# Copy requirements.txt for initial installs
+COPY requirements.txt .
 
 # Install typing-extensions from default PyPI (it's small and generally reliable)
 RUN pip install typing-extensions>=4.10.0
@@ -24,8 +39,6 @@ COPY torch-2.7.1+cpu-cp310-cp310-manylinux_2_28_x86_64.whl .
 COPY torchvision-0.22.1+cpu-cp310-cp310-manylinux_2_28_x86_64.whl .
 
 # Install dependencies in an order that respects requirements
-# Note: pip handles dependencies, so as long as they are all available locally,
-# the order below is generally safe, but installing common ones first is good.
 RUN pip install --no-cache-dir \
     ./filelock-3.13.1-py3-none-any.whl \
     ./fsspec-2024.6.1-py3-none-any.whl \
@@ -42,10 +55,11 @@ RUN pip install --no-cache-dir \
 # --- END MANUAL INSTALLATIONS ---
 
 # Then install the rest of requirements.txt
-# MAKE SURE 'ultralytics' IS UNCOMMENTED IN requirements.txt if it was commented out.
-# torch and torchvision should NOT be listed directly in requirements.txt if manually installed here.
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+
+# Expose port 8000 for FastAPI (if you add FastAPI later)
+EXPOSE 8000
 
 CMD ["tail", "-f", "/dev/null"]

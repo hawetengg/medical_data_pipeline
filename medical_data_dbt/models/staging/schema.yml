@@ -6,6 +6,7 @@ sources:
     schema: raw          # This should match the schema your load_to_postgres.py creates
     tables:
       - name: telegram_messages
+      - name: yolo_detections
         # You can add tests for your raw data here if desired
         # tests:
         #   - unique:
