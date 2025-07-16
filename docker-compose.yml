@@ -1,15 +1,29 @@
+version: '3.8'
 
 services:
   app:
     build: .
+    restart: always # Added for resilience
     volumes:
       - .:/app
     env_file:
       - .env
     depends_on:
       - db
+    ports:
+      - "8000:8000" # <-- ADDED: Maps host port 8000 to container port 8000 for FastAPI
+    environment: # <-- ADDED: Pass environment variables to the app container
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db # This connects to the 'db' service defined below
+      DB_PORT: ${DB_PORT}
+      TELEGRAM_API_ID: ${TELEGRAM_API_ID} # Ensure these are in your .env file
+      TELEGRAM_API_HASH: ${TELEGRAM_API_HASH} # Ensure these are in your .env file
+
   db:
     image: postgres:15
+    restart: always # Added for resilience
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -18,5 +32,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
 volumes:
   postgres_data:
